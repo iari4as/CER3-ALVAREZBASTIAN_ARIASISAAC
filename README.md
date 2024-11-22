@@ -1,1 +1,3 @@
 # CER3-ALVAREZBASTIAN_ARIASISAAC
+
+##requerimientos
