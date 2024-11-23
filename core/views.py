@@ -11,6 +11,8 @@ from .models import Evento
 from .forms import FormularioEvento
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.http import JsonResponse
+from datetime import datetime
 
 @login_required
 def manageEvents(request):
@@ -126,7 +128,45 @@ def signout(request):
         return redirect('home')
 
 def event_form(request):
+    errors = {}
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+        start_date = request.POST.get("start_date", "")
+        end_date = request.POST.get("end_date", "")
+        event_type = request.POST.get("event_type", "")
+
+        # Validación del título
+        if len(title) < 5:
+            errors["title"] = "El título debe tener al menos 5 caracteres."
+
+        # Validación de la descripción
+        if len(description) < 10:
+            errors["description"] = "La descripción debe tener al menos 10 caracteres."
+
+        # Validación de las fechas
+        try:
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+            if start_date_obj >= end_date_obj:
+                errors["dates"] = "La fecha de inicio debe ser anterior a la fecha de fin."
+        except ValueError:
+            errors["dates"] = "Las fechas deben tener un formato válido."
+
+        # Validación del tipo de evento
+        if not event_type:
+            errors["event_type"] = "Debes seleccionar un tipo de evento."
+
+        # Si hay errores, se devuelven al formulario
+        if errors:
+            return render(request, "core/event_form.html", {"errors": errors})
+
+        # Si no hay errores, redirigir o guardar los datos
+        # Aquí podrías guardar los datos en la base de datos
+        return redirect("ManageEvents")  # Cambia esto por la URL correspondiente
+
     return render(request, "core/event_form.html")
+
 
 
 
