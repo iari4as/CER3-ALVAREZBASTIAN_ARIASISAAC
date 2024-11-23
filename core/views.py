@@ -163,7 +163,7 @@ def event_form(request):
 
         # Si no hay errores, redirigir o guardar los datos
         # Aquí podrías guardar los datos en la base de datos
-        return redirect("ManageEvents")  # Cambia esto por la URL correspondiente
+        return redirect("core/event_form.html")  # Cambia esto por la URL correspondiente
 
     return render(request, "core/event_form.html")
 

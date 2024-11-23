@@ -1,16 +1,21 @@
-{% extends "core/base.html" %}
-
 {% block content %}
 <div class="card shadow p-4 mx-auto mt-4" style="max-width: 600px;">
     <h3 class="text-center mb-4">Agregar/Editar Evento</h3>
     <form method="post" action="#">
+        {% csrf_token %}
         <div class="mb-3">
             <label for="title" class="form-label">Título</label>
             <input type="text" class="form-control" id="title" name="title" required>
+            {% if errors.title %}
+                <div class="text-danger">{{ errors.title }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Descripción</label>
             <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            {% if errors.description %}
+                <div class="text-danger">{{ errors.description }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="start_date" class="form-label">Fecha de Inicio</label>
@@ -19,13 +24,20 @@
         <div class="mb-3">
             <label for="end_date" class="form-label">Fecha de Fin</label>
             <input type="date" class="form-control" id="end_date" name="end_date" required>
+            {% if errors.dates %}
+                <div class="text-danger">{{ errors.dates }}</div>
+            {% endif %}
         </div>
         <div class="mb-3">
             <label for="event_type" class="form-label">Tipo de Evento</label>
             <select class="form-select" id="event_type" name="event_type" required>
+                <option value="">Seleccionar</option>
                 <option value="Académico">Académico</option>
                 <option value="Feriado">Feriado</option>
             </select>
+            {% if errors.event_type %}
+                <div class="text-danger">{{ errors.event_type }}</div>
+            {% endif %}
         </div>
         <button type="submit" class="btn btn-primary w-100">Guardar</button>
     </form>
