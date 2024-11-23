@@ -7,6 +7,15 @@ from rest_framework import generics
 from .models import EventoAcademico
 from .forms import FormularioEvento
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.contrib.auth.models import Group
+
+@login_required
+def manageEvents(request):
+    if request.user.groups.filter(name='AdministradorAcademico').exists():
+        return render(request, 'core/manage_events.html')
+    else:
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
 
 # Create your views here.
 def home(request):
@@ -50,8 +59,7 @@ def iniciarSesion(request):
                 }
         return render(request, 'core/login.html', data) 
 
-def manageEvents(request):
-        return render(request, "core/manage_events.html")
+
 
 def registroUser(request):
     data = {
@@ -85,6 +93,7 @@ def registroUser(request):
             if(request.POST['password1'] == request.POST['password2'] ):
                 try:
                     user = User.objects.create_user(email=request.POST['email'], username=request.POST['username'], password=request.POST['password1'])
+
                     user.save()
                     login(request, user)
                     return redirect("home")
@@ -107,45 +116,7 @@ def registroUser(request):
             }
             return  render(request, 'core/register.html', data)
         
-    if(request.method == 'GET'):
-            return render(request, 'core/register.html',data)
-    else:
-            #################### VALIDACIONES ##########################
-            email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-            if( not re.match(email_regex,email ) or 
-                len(email) == 0 or 
-                (len(password2) == 0 and 
-                len(password1) == 0) or  
-                len(username) == 0):
-                flag = False
-            ############################################################
-            print(request.POST)
-            if(flag):
-                if(request.POST['password1'] == request.POST['password2'] ):
-                    try:
-                        user = User.objects.create_user(email=request.POST['email'], username=request.POST['username'], password=request.POST['password1'])
-                        user.save()
-                        login(request, user)
-                        return redirect("home")
-                        
-                    except:
-                        data = {
-                            'form':UserCreationForm,
-                            'error1': 'Nombre de usuario ya existe, intenta otro'
-                        }
-                        return render(request, 'core/register.html', data)
-                data = {
-                    'form':UserCreationForm,
-                    'error2': 'Las contraseñas no coinciden'
-                }
-                return  render(request, 'core/register.html', data)
-            else:
-                data = {
-                    'form':UserCreationForm,
-                    'error3': 'Llene todos los campos requeridos'
-                }
-                return  render(request, 'core/register.html', data)
-            
+
 
 def signout(request):
         logout(request)
