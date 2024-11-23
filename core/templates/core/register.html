@@ -7,8 +7,8 @@
         <form method="post" action="#">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="name" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Ingresa tu nombre completo" required>
+                <label for="name" class="form-label">Nombre de Usuario</label> {{error1}}
+                <input type="text" class="form-control" id="username" name="name" placeholder="Ingresa tu username" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Correo Electrónico</label>
@@ -24,13 +24,14 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
+                <label for="password" class="form-label">Contraseña</label> {{error2}}
                 <input type="password" class="form-control" id="password1" name="password1" placeholder="Crea una contraseña segura" required>
             </div>
             <div class="mb-3">
                 <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
                 <input type="password" class="form-control" id="password2" name="password2" placeholder="Repite la contraseña" required>
             </div>
+            {{error3}}
             <button type="submit" class="btn btn-primary w-100">Registrarse</button>
             <div class="text-center mt-3">
                 <small>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></small>

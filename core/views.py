@@ -58,6 +58,7 @@ def registroUser(request):
     password1 = request.POST.get('password1', '')
     password2 = request.POST.get('password2', '')
     username = request.POST.get('username', '')
+    role = request.POST.get('role','')
     flag = True
 
    
@@ -71,11 +72,13 @@ def registroUser(request):
             len(email) == 0 or 
             (len(password2) == 0 and 
             len(password1) == 0) or  
-            len(username) == 0):
+            len(username) == 0 or
+            len(role) == 0):
             flag = False
         ############################################################
         print(request.POST)
         if(flag):
+            print(password1 + " " + password2 +" " +username +" "+ role)
             if(request.POST['password1'] == request.POST['password2'] ):
                 try:
                     user = User.objects.create_user(email=request.POST['email'], username=request.POST['username'], password=request.POST['password1'])
