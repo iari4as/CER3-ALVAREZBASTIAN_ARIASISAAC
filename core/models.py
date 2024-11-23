@@ -34,7 +34,7 @@ class Evento(models.Model):
     TipoEvento = models.CharField(max_length=50, choices=TIPO_EVENTO_CHOICES)
     
     def __str__(self):
-        return f'{self.nombre} ({self.tipo_evento})'
+        return f'{self.Titulo} ({self.TipoEvento})'
 
 
 
