@@ -1,7 +1,7 @@
 from django import forms
-from .models import EventoAcademico
+from .models import Evento
 
 class FormularioEvento(forms.ModelForm):
     class Meta:
-        model = EventoAcademico
-        fields = ['Titulo', 'Descripcion', 'InicioPeriodo', 'FinPeriodo', 'TipoEvento']
+        model = Evento
+        fields = ['Titulo', 'Descripcion', 'fecha_inicio', 'fecha_fin', 'TipoEvento']

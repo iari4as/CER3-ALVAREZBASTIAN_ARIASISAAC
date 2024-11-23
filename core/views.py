@@ -3,23 +3,26 @@ from django.contrib.auth.forms import UserCreationForm
 import re
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .models import EventoAcademico
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializers import EventoSerializer
+from .models import Evento
 from .forms import FormularioEvento
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from django.contrib.auth.models import Group
 
 @login_required
 def manageEvents(request):
     if request.user.groups.filter(name='AdministradorAcademico').exists():
-        return render(request, 'core/manage_events.html')
+        eventos = Evento.objects.all()
+        return render(request, 'core/manage_events.html', {'eventos': eventos})
     else:
         return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
 
 # Create your views here.
 def home(request):
-        return render(request, "core/index.html")
+    return render(request, "core/index.html")
 
 def iniciarSesion(request):
         data = {
@@ -122,13 +125,24 @@ def signout(request):
         logout(request)
         return redirect('home')
 
+def event_form(request):
+    return render(request, "core/event_form.html")
+
+
+
+
+
+
+
+
+
 @login_required
 def gestioneventos(request):
-    eventos = EventoAcademico.objects.all()
+    eventos = Evento.objects.all()
     if request.method == 'POST':
         evento_id = request.POST.get('event_id', None)
         if evento_id: 
-            evento = get_object_or_404(EventoAcademico, id=evento_id)
+            evento = get_object_or_404(Evento, id=evento_id)
             form = FormularioEvento(request.POST, instance=evento)
         else:
             form = FormularioEvento(request.POST)
@@ -145,6 +159,25 @@ def gestioneventos(request):
 
 @login_required
 def eliminarevento(request, event_id):
-    evento = get_object_or_404(EventoAcademico, id=event_id)
+    evento = get_object_or_404(Evento, id=event_id)
     evento.delete()
     return redirect('manage_events')
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Evento
+from .serializers import EventoSerializer
+
+class EventoCreateAPIView(APIView):
+    """
+    API para crear eventos.
+    """
+
+    def post(self, request, *args, **kwargs):
+        serializer = EventoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

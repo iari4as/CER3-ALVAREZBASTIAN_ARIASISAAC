@@ -4,7 +4,7 @@
 <div class="my-4">
     <h2 class="text-center">Administración de Eventos</h2>
     <div class="d-flex justify-content-end mb-3">
-        <a href="event_form.html" class="btn btn-success">Agregar Evento</a>
+        <a href="{% url 'event_form'%}" class="btn btn-success">Agregar Evento</a>
     </div>
     <div class="table-responsive">
         <table class="table table-bordered">
@@ -18,17 +18,25 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Ejemplo de eventos -->
+                {% for evento in eventos %}
                 <tr>
-                    <td>2024-03-01</td>
-                    <td>2024-03-31</td>
-                    <td>Inicio del Semestre</td>
-                    <td>Académico</td>
+                    <td>{{ evento.fecha_inicio }}</td>
+                    <td>{{ evento.fecha_fin }}</td>
+                    <td>{{ evento.Titulo }}</td>
+                    <td>{{ evento.get_TipoEvento_display }}</td>
                     <td>
-                        <a href="event_form.html" class="btn btn-warning btn-sm">Editar</a>
-                        <button class="btn btn-danger btn-sm">Eliminar</button>
+                        <a href="{% url 'gestion' %}?event_id={{ evento.id }}" class="btn btn-warning btn-sm">Editar</a>
+                        <form method="POST" action="{% url 'eliminar' evento.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No hay eventos registrados.</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

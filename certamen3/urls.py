@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import home, iniciarSesion,manageEvents,signout,registroUser,gestioneventos,eliminarevento
+from core.views import home, iniciarSesion,manageEvents,signout,registroUser,gestioneventos,eliminarevento,EventoCreateAPIView, event_form
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home, name="home" ),
@@ -26,4 +26,6 @@ urlpatterns = [
     path('logout/', signout, name="logout"),
     path('gestion/', gestioneventos, name='gestion'),
     path('eliminar/<int:event_id>/', eliminarevento, name='eliminar'),
+    path('api/eventos/create/', EventoCreateAPIView.as_view(), name='api_event_create'),
+    path('CrearEvento/', event_form, name="event_form"),
 ]
