@@ -45,3 +45,7 @@ def iniciarSesion(request):
                 'error2':' debe ingresar informacion en ambos campos'
             }
     return render(request, 'core/login.html', data) 
+
+def manageEvents(request):
+    return render(request, "core/manage_events.html")
+
