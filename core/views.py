@@ -69,16 +69,16 @@ def registroUser(request):
         #################### VALIDACIONES ##########################
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if( not re.match(email_regex,email ) or 
-            len(email) == 0 or 
-            (len(password2) == 0 and 
-            len(password1) == 0) or  
-            len(username) == 0 or
-            len(role) == 0):
+            ((len(email) == 0 )or 
+            (len(password2) == 0) and 
+            (len(password1) == 0) or  
+            (len(username) == 0) or
+            (len(role) == 0))):
             flag = False
         ############################################################
-        print(request.POST)
+        print(password1 + " " + password2 +" " +username +" "+ role)
         if(flag):
-            print(password1 + " " + password2 +" " +username +" "+ role)
+            
             if(request.POST['password1'] == request.POST['password2'] ):
                 try:
                     user = User.objects.create_user(email=request.POST['email'], username=request.POST['username'], password=request.POST['password1'])
