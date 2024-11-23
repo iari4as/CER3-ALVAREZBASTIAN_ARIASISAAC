@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 import re
+import requests
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -24,7 +25,20 @@ def manageEvents(request):
 
 # Create your views here.
 def home(request):
-    return render(request, "core/index.html")
+    eventos = Evento.objects.all()
+    feriados = []
+    
+    try:
+        response = requests.get("https://calendarific.com/api/v2")
+        if response.status_code == 200:
+            feriados = response.json().get('holidays', [])
+    except requests.exceptions.RequestException as e:
+        print(f"Error al conectar con la API de feriados: {e}")
+
+    return render(request, "core/index.html", {
+        'eventos': eventos,
+        'feriados': feriados
+    })
 
 def iniciarSesion(request):
         data = {
@@ -167,9 +181,51 @@ def event_form(request):
 
     return render(request, "core/event_form.html")
 
-
-
-
+class EventoAPI(APIView):
+    def post(self, request):
+        serializer = EventoSerializer(data=request.data)
+        if serializer.is_valid():
+            # Llamar a la API de Calendarific
+            fecha_inicio = serializer.validated_data['fecha_inicio']
+            year = fecha_inicio.year  # Extraer el año de la fecha
+            api_key = "TU_API_KEY" 
+            url_api_feriados = f"https://calendarific.com/api/v2/holidays"
+            params = {
+                "api_key": api_key,
+                "country": "CL",
+                "year": year,
+                "type": "national"
+            }
+            
+            try:
+                response = requests.get(url_api_feriados, params=params)
+                if response.status_code == 200:
+                    data = response.json()
+                    holidays = data.get('response', {}).get('holidays', [])
+                    es_feriado = any(
+                        holiday['date']['iso'] == str(fecha_inicio) for holiday in holidays
+                    )
+                    if es_feriado:
+                        return Response(
+                            {"message": "La fecha coincide con un feriado en Chile.", "conflict": True},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                else:
+                    return Response(
+                        {"message": "Error al consultar la API de Calendarific.", "details": response.json()},
+                        status=status.HTTP_503_SERVICE_UNAVAILABLE
+                    )
+            except requests.exceptions.RequestException as e:
+                return Response(
+                    {"message": "Error al conectar con la API de Calendarific.", "error": str(e)},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE
+                )
+            
+            # Guardar el evento si no hay conflictos
+            serializer.save()
+            return Response({"message": "Evento creado exitosamente", "conflict": False}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -197,11 +253,6 @@ def gestioneventos(request):
         'form': form
     })
 
-@login_required
-def eliminarevento(request, event_id):
-    evento = get_object_or_404(Evento, id=event_id)
-    evento.delete()
-    return redirect('manage_events')
 
 
 from rest_framework.views import APIView

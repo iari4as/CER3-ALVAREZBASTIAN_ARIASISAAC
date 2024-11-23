@@ -14,19 +14,25 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Ejemplo de datos -->
+                <!-- Iteración sobre eventos -->
+                {% for evento in eventos %}
                 <tr>
-                    <td>2024-01-01</td>
-                    <td>Año Nuevo</td>
-                    <td>Feriado Nacional</td>
-                    <td>Día festivo nacional.</td>
+                    <td>{{ evento.start_date }}</td>
+                    <td>{{ evento.title }}</td>
+                    <td>{{ evento.event_type }}</td>
+                    <td>{{ evento.description }}</td>
                 </tr>
+                {% endfor %}
+
+                <!-- Iteración sobre feriados -->
+                {% for feriado in feriados %}
                 <tr>
-                    <td>2024-03-01</td>
-                    <td>Inicio del Semestre</td>
-                    <td>Académico</td>
-                    <td>Inicio del período académico.</td>
+                    <td>{{ feriado.date }}</td>
+                    <td>{{ feriado.name }}</td>
+                    <td>Feriado</td>
+                    <td>{{ feriado.description }}</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
