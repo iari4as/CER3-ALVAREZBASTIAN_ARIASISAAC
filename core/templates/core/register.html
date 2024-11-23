@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 90vh;">
+    <div class="card shadow p-4" style="width: 400px;">
+        <h3 class="text-center mb-4">Registro de Usuario</h3>
+        <form method="post" action="#">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Ingresa tu nombre completo" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com" required>
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Tipo de Usuario</label>
+                <select class="form-select" id="role" name="role" required>
+                    <option value="" disabled selected>Selecciona tu rol</option>
+                    <option value="student">Estudiante</option>
+                    <option value="teacher">Docente</option>
+                    <option value="admin">Administrador Académico</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password1" name="password1" placeholder="Crea una contraseña segura" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
+                <input type="password" class="form-control" id="password2" name="password2" placeholder="Repite la contraseña" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            <div class="text-center mt-3">
+                <small>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></small>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
