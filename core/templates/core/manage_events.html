@@ -26,7 +26,7 @@
                     <td>{{ evento.get_TipoEvento_display }}</td>
                     <td>
                         <a href="{% url 'gestion' %}?event_id={{ evento.id }}" class="btn btn-warning btn-sm">Editar</a>
-                        <form method="POST" action="{% url 'eliminar' evento.id %}" style="display:inline;">
+                        <form method="POST"  style="display:inline;">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                         </form>
