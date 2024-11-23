@@ -1,0 +1,34 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="my-4">Calendario Académico Consolidado</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ejemplo de datos -->
+                <tr>
+                    <td>2024-01-01</td>
+                    <td>Año Nuevo</td>
+                    <td>Feriado Nacional</td>
+                    <td>Día festivo nacional.</td>
+                </tr>
+                <tr>
+                    <td>2024-03-01</td>
+                    <td>Inicio del Semestre</td>
+                    <td>Académico</td>
+                    <td>Inicio del período académico.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

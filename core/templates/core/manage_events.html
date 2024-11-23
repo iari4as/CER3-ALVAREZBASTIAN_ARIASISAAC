@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="my-4">
+    <h2 class="text-center">Administración de Eventos</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="event_form.html" class="btn btn-success">Agregar Evento</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ejemplo de eventos -->
+                <tr>
+                    <td>2024-03-01</td>
+                    <td>2024-03-31</td>
+                    <td>Inicio del Semestre</td>
+                    <td>Académico</td>
+                    <td>
+                        <a href="event_form.html" class="btn btn-warning btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
