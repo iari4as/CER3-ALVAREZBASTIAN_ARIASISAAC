@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from core.serializers import EventoSerializer
+
 from .models import Evento
 from .forms import FormularioEvento
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -274,6 +276,5 @@ def guardar_edit(request):
         evento.fecha_fin = fechaFin
         evento.save()
         return redirect('ManageEvents')
-
 
 

@@ -4,7 +4,8 @@ from requests import Response
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
+from core.models import Evento as CoreEvento
 import requests
 
 from EduPlanner.serializers import EventoSerializer
@@ -52,35 +53,32 @@ class EventoViewSet(ViewSet):
         serializer = EventoSerializer(data=request.data)
         if serializer.is_valid():
             fecha_inicio = serializer.validated_data['fecha_inicio']
-            url_api_feriados = "https://apis.digital.gob.cl/fl/feriados/2024"
+            fecha_fin = serializer.validated_data['fecha_fin']
 
-            try:
-                response = requests.get(url_api_feriados)
-                if response.status_code == 200:
-                    feriados = response.json()
-                    es_feriado = any(
-                        feriado['fecha'] == str(fecha_inicio) for feriado in feriados
-                    )
-                    if es_feriado:
-                        return Response(
-                            {"message": "La fecha coincide con un feriado en Chile.", "conflict": True},
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
-                else:
-                    return Response(
-                        {"message": "Error al consultar la API de feriados.", "details": response.json()},
-                        status=status.HTTP_503_SERVICE_UNAVAILABLE
-                    )
-            except requests.exceptions.RequestException as e:
+            # Validar si la fecha de inicio o fin se solapa con eventos existentes
+            conflicto = CoreEvento.objects.filter(
+                fecha_inicio__lte=fecha_fin,  # Inicio existente antes o igual al fin nuevo
+                fecha_fin__gte=fecha_inicio   # Fin existente después o igual al inicio nuevo
+            ).exists()
+
+            if conflicto:
                 return Response(
-                    {"message": "Error al conectar con la API de feriados.", "error": str(e)},
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE
+                    {"message": "El rango de fechas coincide con otro evento registrado.", "conflict": True},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
 
+            # Si no hay conflictos, guarda el nuevo evento
             serializer.save()
             return Response({"message": "Evento creado exitosamente", "conflict": False}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class EventoViewSet(ModelViewSet):
+    """
+    ViewSet para manejar los eventos registrados en core.
+    """
+    queryset = CoreEvento.objects.all()
+    serializer_class = EventoSerializer
     
 
 class EventoCreateAPIView(APIView):
