@@ -33,7 +33,7 @@
         <div class="mb-3">
             <label for="event_type" class="form-label">Tipo de Evento</label>
             <select class="form-select" id="event_type" name="event_type" required>
-                <option value="evento.TipoEvento"> {{evento.TipoEvento}}</option>
+                <option value="evento.TipoEvento"> {{TipoEvento}}</option>
                 {% for key, value in TIPO_EVENTO_CHOICES %}
                     <option value="{{ key }}" {% if evento.TipoEvento == key %}selected{% endif %}>
                         {{ value }}

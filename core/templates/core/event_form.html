@@ -31,17 +31,22 @@
                 <div class="text-danger">{{ errors.dates }}</div>
             {% endif %}
         </div>
+
         <div class="mb-3">
             <label for="event_type" class="form-label">Tipo de Evento</label>
             <select class="form-select" id="event_type" name="event_type" required>
-                <option value="">Seleccionar</option>
-                <option value="Académico">Académico</option>
-                <option value="Feriado">Feriado</option>
+                {% for key, value in TIPO_EVENTO_CHOICES %}
+                    <option value="{{ key }}" {% if evento.TipoEvento == key %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
             </select>
             {% if errors.event_type %}
                 <div class="text-danger">{{ errors.event_type }}</div>
             {% endif %}
         </div>
+
+        
         <button type="submit" class="btn btn-primary w-100">Guardar</button>
     </form>
 </div>

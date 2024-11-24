@@ -140,15 +140,19 @@ def signout(request):
         logout(request)
         return redirect('home')
 
+from django.shortcuts import render, redirect
+from .models import Evento
+from datetime import datetime
+
 def event_form(request):
     errors = {}
+
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
         start_date = request.POST.get("start_date", "")
         end_date = request.POST.get("end_date", "")
         event_type = request.POST.get("event_type", "")
-
 
         # Validación del título
         if len(title) < 5:
@@ -173,21 +177,30 @@ def event_form(request):
 
         # Si hay errores, se devuelven al formulario
         if errors:
-            return render(request, "core/event_form.html", {"errors": errors})
+            data = {
+                'errors': errors,
+                'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
+            }
+            return render(request, "core/event_form.html", data)
 
-        # Si no hay errores, redirigir o guardar los datos
-        # Aquí podrías guardar los datos en la base de datos
+        # Si no hay errores, guardar el evento
         evento = Evento(
             Titulo=title,
             Descripcion=description,
-            fecha_inicio=start_date,
-            fecha_fin=end_date,
+            fecha_inicio=start_date_obj,
+            fecha_fin=end_date_obj,
             TipoEvento=event_type
         )
         evento.save()
-        return redirect("ManageEvents")  # Cambia esto por la URL correspondiente
+        return redirect("ManageEvents")  # Redirigir a la página correspondiente
 
-    return render(request, "core/event_form.html")
+    # Si la solicitud no es POST, solo renderizamos el formulario
+    data = {
+        'errors': errors,
+        'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
+    }
+    return render(request, "core/event_form.html", data)
+
 
 class EventoAPI(APIView):
     def post(self, request):
