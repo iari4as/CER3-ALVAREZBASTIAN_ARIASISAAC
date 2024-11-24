@@ -152,6 +152,7 @@ def event_form(request):
         end_date = request.POST.get("end_date", "")
         event_type = request.POST.get("event_type", "")
 
+
         # Validación del título
         if len(title) < 5:
             errors["title"] = "El título debe tener al menos 5 caracteres."
@@ -179,7 +180,15 @@ def event_form(request):
 
         # Si no hay errores, redirigir o guardar los datos
         # Aquí podrías guardar los datos en la base de datos
-        return redirect("core/event_form.html")  # Cambia esto por la URL correspondiente
+        evento = Evento(
+            Titulo=title,
+            Descripcion=description,
+            fecha_inicio=start_date,
+            fecha_fin=end_date,
+            TipoEvento=event_type
+        )
+        evento.save()
+        return redirect("ManageEvents")  # Cambia esto por la URL correspondiente
 
     return render(request, "core/event_form.html")
 
@@ -273,6 +282,8 @@ def gestioneventos(request):
         'eventos': eventos,
         'form': form
     })
+
+
 
 def guardar_edit(request):
     if request.method == 'POST':
