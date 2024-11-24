@@ -19,6 +19,8 @@ from datetime import datetime
 from django.contrib import messages
 
 
+
+
 @login_required
 def manageEvents(request):
     if request.user.groups.filter(name='AdministradorAcademico').exists():
@@ -28,6 +30,9 @@ def manageEvents(request):
         return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
 
 # Create your views here.
+import requests
+from django.shortcuts import render
+
 def home(request):
     # Obtener el tipo de evento desde el filtro de la URL (si está presente)
     event_type_filter = request.GET.get('event_type', '')
@@ -38,14 +43,28 @@ def home(request):
     else:
         eventos = Evento.objects.all()  # Si no hay filtro, mostrar todos los eventos
 
+    # Realizar la solicitud GET para obtener los feriados
+    feriados_url = 'http://127.0.0.1:8000/api/Feriados/'  # URL de la API de feriados
+    feriados_response = requests.get(feriados_url)
+    
+
+    # Verificar si la solicitud fue exitosa
+    if feriados_response.status_code == 200:
+        feriados = feriados_response.json()  # Obtenemos los feriados como un diccionario
+        for f in feriados['feriados']:
+            nombre = f['name']
+            print(nombre)
+    else:
+        feriados = []  # Si la solicitud falla, devolvemos una lista vacía
+
     # Crear el diccionario de contexto
     data = {
         'eventos': eventos,
         'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
+        'feriados': feriados,  # Añadir los feriados al contexto
     }
 
     return render(request, "core/index.html", data)
-
 def iniciarSesion(request):
         data = {
             'form':UserCreationForm
