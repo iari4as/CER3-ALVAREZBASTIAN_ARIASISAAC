@@ -27,7 +27,7 @@ urlpatterns = [
     path('gestion/', gestioneventos, name='gestion'),
     path('api/eventos/create/', EventoCreateAPIView.as_view(), name='api_event_create'),
     path('CrearEvento/', event_form, name="event_form"),
-    path('eventos/eliminar/<int:event_id>/', eliminar_evento, name='eliminar_evento'),
+    path('eliminar_evento/<int:evento_id>/', eliminar_evento, name='eliminar_evento'),
     path('editar_evento/<int:evento_id>/', editar_evento, name='editar_evento'),
     path('confirm/', guardar_edit, name='guardar_edit')
 ]

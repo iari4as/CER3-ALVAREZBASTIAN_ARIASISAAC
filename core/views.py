@@ -230,11 +230,12 @@ class EventoAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def eliminar_evento(request, event_id):
-    evento = get_object_or_404(Evento, id=event_id)
-    evento.delete()
-    messages.success(request, "El evento ha sido eliminado correctamente.")
-    return redirect('lista_eventos')  # Redirige a la lista de eventos
+def eliminar_evento(request, evento_id):
+    if request.method == "POST":
+        evento = get_object_or_404(Evento, id=evento_id)
+        evento.delete()
+        messages.success(request, "El evento fue eliminado exitosamente.")
+    return redirect('ManageEvents')  # Cambia 'lista_eventos' por la vista correspondiente.
 
 
 def editar_evento(request, evento_id):
