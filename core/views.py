@@ -246,7 +246,7 @@ def editar_evento(request, evento_id):
         evento.fecha_fin = request.POST.get('end_date')
         evento.TipoEvento = request.POST.get('event_type')
         evento.save()
-        return redirect('editar_evento')
+        return redirect('ManageEvents')
     return render(request, 'core/edit_evento.html', {
         'evento': evento,
         'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
@@ -273,7 +273,22 @@ def gestioneventos(request):
         'form': form
     })
 
-
+def guardar_edit(request):
+    if request.method == 'POST':
+        evento_id = request.POST.get('evento_id')
+        nuevoTipo = request.POST.get('event_type')
+        titulo = request.POST.get('title')
+        fechaInicio = request.POST.get('start_date')
+        fechaFin = request.POST.get('end_date')
+        descripcion = request.POST.get('description')
+        evento = Evento.objects.get(id = evento_id)
+        evento.Descripcion = descripcion
+        evento.TipoEvento = nuevoTipo
+        evento.Titulo = titulo
+        evento.fecha_inicio = fechaInicio
+        evento.fecha_fin = fechaFin
+        evento.save()
+        return redirect('ManageEvents')
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
