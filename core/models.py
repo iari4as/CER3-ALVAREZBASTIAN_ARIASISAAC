@@ -38,6 +38,18 @@ class Evento(models.Model):
 
 
 
+class Alerta(models.Model):
+    titulo = models.CharField(max_length=255)
+    descripcion = models.TextField()
+    tipo = models.CharField(max_length=50)  # Ejemplo: "ConflictoEvento"
+    estado = models.CharField(
+        max_length=20,
+        choices=[("Pendiente", "Pendiente"), ("Resuelto", "Resuelto")],
+        default="Pendiente"
+    )
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+
 
 
 
