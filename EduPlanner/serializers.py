@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Evento
+from core.models import Evento
 
 class EventoSerializer(serializers.ModelSerializer):
     class Meta:

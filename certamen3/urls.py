@@ -15,8 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from core.views import home, iniciarSesion,manageEvents,signout,registroUser,EventoCreateAPIView, event_form,editar_evento\
+from django.urls import include, path
+from core.views import home, iniciarSesion,manageEvents,signout,registroUser, event_form,editar_evento\
                     , eliminar_evento, guardar_edit
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,9 +25,9 @@ urlpatterns = [
     path('Eventos/', manageEvents, name="ManageEvents"),
     path('registro/', registroUser, name= "register"),
     path('logout/', signout, name="logout"),
-    path('api/eventos/create/', EventoCreateAPIView.as_view(), name='api_event_create'),
     path('CrearEvento/', event_form, name="event_form"),
     path('eliminar_evento/<int:evento_id>/', eliminar_evento, name='eliminar_evento'),
     path('editar_evento/<int:evento_id>/', editar_evento, name='editar_evento'),
-    path('confirm/', guardar_edit, name='guardar_edit')
+    path('confirm/', guardar_edit, name='guardar_edit'),
+    path('api/', include('EduPlanner.urls')),
 ]
