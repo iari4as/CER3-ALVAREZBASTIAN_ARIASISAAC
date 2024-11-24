@@ -1,15 +1,18 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-<div class="text-center">
-    <h1 class="my-4">Calendario Académico</h1>
+    <h1>Calendario Académico</h1>
+
+    <!-- Mostrar los feriados -->
+    <h2>Feriados</h2>
     
-    <!-- Formulario de filtro -->
+
+    <!-- Formulario de filtro de eventos -->
     <form method="GET" action="{% url 'home' %}">
         <div class="mb-3">
             <label for="event_type" class="form-label">Filtrar por Tipo de Evento</label>
             <select class="form-select" id="event_type" name="event_type">
-                <option value="">Todos</option> <!-- Opción para mostrar todos los eventos -->
+                <option value="">Todos</option>
                 {% for key, value in TIPO_EVENTO_CHOICES %}
                     <option value="{{ key }}" {% if key == request.GET.event_type %}selected{% endif %}>
                         {{ value }}
@@ -33,14 +36,13 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Iteración sobre todos los eventos -->
                 {% for evento in eventos %}
                 <tr>
-                    <td>{{ evento.fecha_inicio }}</td> <!-- Mostrar fecha_inicio -->
-                    <td>{{ evento.fecha_fin }}</td>    <!-- Mostrar fecha_fin -->
-                    <td>{{ evento.Titulo }}</td>        <!-- Mostrar Titulo -->
-                    <td>{{ evento.get_TipoEvento_display }}</td> <!-- Mostrar el tipo de evento legible -->
-                    <td>{{ evento.Descripcion }}</td>  <!-- Mostrar Descripcion -->
+                    <td>{{ evento.fecha_inicio }}</td>
+                    <td>{{ evento.fecha_fin }}</td>
+                    <td>{{ evento.Titulo }}</td>
+                    <td>{{ evento.get_TipoEvento_display }}</td>
+                    <td>{{ evento.Descripcion }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -50,5 +52,4 @@
             </tbody>
         </table>
     </div>
-</div>
 {% endblock %}

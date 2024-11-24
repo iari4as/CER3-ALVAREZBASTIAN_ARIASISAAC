@@ -16,8 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from core.views import home, iniciarSesion,manageEvents,signout,registroUser, event_form,editar_evento\
-                    , eliminar_evento, guardar_edit
+from core.views import home, iniciarSesion,manageEvents,signout,registroUser, event_form,editar_evento, eliminar_evento, guardar_edit
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home, name="home" ),

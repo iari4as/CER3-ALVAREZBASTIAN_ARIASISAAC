@@ -31,6 +31,11 @@ class FeriadosViewSet(ViewSet):
             # Realiza la solicitud a la API de Calendarific
             response = requests.get(url_api_calendarific, params=params, timeout=10)
 
+            #prints de monitoreo
+            #print("URL consultada:", response.url)
+            #print("Código de respuesta:", response.status_code)
+            #print("Cuerpo de la respuesta:", response.text)
+
             if response.status_code == 200:
                 data = response.json()
                 feriados = data.get("response", {}).get("holidays", [])
@@ -46,7 +51,7 @@ class FeriadosViewSet(ViewSet):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
         
-class EventoViewSet(ViewSet):
+class EventoValidationViewSet(ViewSet):
     """
     ViewSet para manejar la creación y validación de eventos académicos.
     """
