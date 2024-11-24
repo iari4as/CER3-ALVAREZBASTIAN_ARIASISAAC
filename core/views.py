@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from datetime import datetime
+from django.contrib import messages
+
 
 @login_required
 def manageEvents(request):
@@ -228,9 +230,27 @@ class EventoAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def eliminar_evento(request, event_id):
+    evento = get_object_or_404(Evento, id=event_id)
+    evento.delete()
+    messages.success(request, "El evento ha sido eliminado correctamente.")
+    return redirect('lista_eventos')  # Redirige a la lista de eventos
 
 
-
+def editar_evento(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    if request.method == "POST":
+        evento.Titulo = request.POST.get('title')
+        evento.Descripcion = request.POST.get('description')
+        evento.fecha_inicio = request.POST.get('start_date')
+        evento.fecha_fin = request.POST.get('end_date')
+        evento.TipoEvento = request.POST.get('event_type')
+        evento.save()
+        return redirect('editar_evento')
+    return render(request, 'core/edit_evento.html', {
+        'evento': evento,
+        'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
+    })
 
 @login_required
 def gestioneventos(request):

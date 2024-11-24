@@ -8,6 +8,7 @@
     </div>
     <div class="table-responsive">
         <table class="table table-bordered">
+
             <thead class="table-dark">
                 <tr>
                     <th>Fecha Inicio</th>
@@ -25,9 +26,10 @@
                     <td>{{ evento.Titulo }}</td>
                     <td>{{ evento.get_TipoEvento_display }}</td>
                     <td>
-                        <a href="{% url 'gestion' %}?event_id={{ evento.id }}" class="btn btn-warning btn-sm">Editar</a>
                         <form method="POST"  style="display:inline;">
                             {% csrf_token %}
+                            <input type="hidden" name="evento_id" value="{{ evento.id }}">
+                            <a href="{% url 'editar_evento' evento.id %}" class="btn btn-warning btn-sm">Editar</a>
                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                         </form>
                     </td>
@@ -38,6 +40,7 @@
                 </tr>
                 {% endfor %}
             </tbody>
+
         </table>
     </div>
 </div>

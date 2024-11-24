@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2 class="text-center">Editar Evento</h2>
+<div class="card shadow p-4 mx-auto mt-4" style="max-width: 600px;">
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Título</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ evento.Titulo }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Descripción</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required>{{ evento.Descripcion }}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Fecha de Inicio</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ evento.fecha_inicio|date:'Y-m-d' }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="end_date" class="form-label">Fecha de Fin</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ evento.fecha_fin|date:'Y-m-d' }}" required>
+            {% if errors.dates %}
+                <div class="text-danger">{{ errors.dates }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="event_type" class="form-label">Tipo de Evento</label>
+            <select class="form-select" id="event_type" name="event_type" required>
+                <option value="evento.TipoEvento"> {{evento.TipoEvento}}</option>
+                {% for key, value in TIPO_EVENTO_CHOICES %}
+                    <option value="{{ key }}" {% if evento.TipoEvento == key %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if errors.event_type %}
+                <div class="text-danger">{{ errors.event_type }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    </form>
+</div>
+{% endblock %}
