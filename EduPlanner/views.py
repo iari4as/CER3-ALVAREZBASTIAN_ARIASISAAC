@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 from django.shortcuts import render
 from requests import Response
@@ -55,20 +56,31 @@ class EventoViewSet(ViewSet):
             fecha_inicio = serializer.validated_data['fecha_inicio']
             fecha_fin = serializer.validated_data['fecha_fin']
             titulo = serializer.validated_data['Titulo']
-            
-            # URL o consulta para obtener feriados (ajusta si es una llamada interna)
-            url_api_feriados = "https://apis.digital.gob.cl/fl/feriados/2024"
+
+            # URL o consulta para obtener feriados desde el FeriadosViewSet
+            url_api_feriados = "https://calendarific.com/api/v2/holidays"
+            params = {
+                "api_key": "dtcJZ596nMJrmn5Ev9Mzue4WDjxHGsdt",
+                "country": "CL",
+                "year": fecha_inicio.year,  # Solo obtenemos feriados del año correspondiente
+            }
 
             try:
                 # Consultar los feriados
-                response = requests.get(url_api_feriados, timeout=10)
+                response = requests.get(url_api_feriados, params=params, timeout=10)
                 if response.status_code == 200:
-                    feriados = response.json()
-                    
+                    data = response.json()
+                    feriados = data.get("response", {}).get("holidays", [])
+
+                    # Convertir los feriados a objetos datetime para comparar
+                    fechas_feriados = [
+                        datetime.strptime(feriado["date"]["iso"], "%Y-%m-%d").date()
+                        for feriado in feriados
+                    ]
+
                     # Verificar si hay conflicto con algún feriado
                     conflicto = any(
-                        feriado['fecha'] >= str(fecha_inicio) and feriado['fecha'] <= str(fecha_fin)
-                        for feriado in feriados
+                        fecha_inicio <= feriado <= fecha_fin for feriado in fechas_feriados
                     )
 
                     if conflicto:
@@ -95,19 +107,25 @@ class EventoViewSet(ViewSet):
                         )
                 else:
                     return Response(
-                        {"message": "Error al consultar la API de feriados.", "details": response.json()},
+                        {
+                            "message": "Error al consultar la API de feriados.",
+                            "details": response.json()
+                        },
                         status=status.HTTP_503_SERVICE_UNAVAILABLE
                     )
             except requests.exceptions.RequestException as e:
                 return Response(
-                    {"message": "Error al conectar con la API de feriados.", "error": str(e)},
+                    {
+                        "message": "Error al conectar con la API de feriados.",
+                        "error": str(e)
+                    },
                     status=status.HTTP_503_SERVICE_UNAVAILABLE
                 )
 
             # Guardar el evento si no hay conflictos
             serializer.save()
             return Response({"message": "Evento creado exitosamente", "conflict": False}, status=status.HTTP_201_CREATED)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class EventoViewSet(ModelViewSet):
