@@ -10,7 +10,7 @@ from rest_framework import status
 from .serializers import EventoSerializer
 from .models import Evento
 from .forms import FormularioEvento
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse
 from datetime import datetime
@@ -149,6 +149,10 @@ from django.shortcuts import render, redirect
 from .models import Evento
 from datetime import datetime
 
+def es_administrador(usuario):
+    return usuario.is_authenticated and usuario.groups.filter(name="AdministradorAcademico").exists()
+
+@user_passes_test(es_administrador)
 def event_form(request):
     errors = {}
 
