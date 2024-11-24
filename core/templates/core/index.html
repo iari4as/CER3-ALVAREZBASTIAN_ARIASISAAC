@@ -2,35 +2,31 @@
 
 {% block content %}
 <div class="text-center">
-    <h1 class="my-4">Calendario Académico Consolidado</h1>
+    <h1 class="my-4">Calendario Académico</h1>
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead class="table-primary">
                 <tr>
-                    <th>Fecha</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
                     <th>Título</th>
-                    <th>Tipo</th>
+                    <th>Tipo de Evento</th>
                     <th>Descripción</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Iteración sobre eventos -->
+                <!-- Iteración sobre todos los eventos -->
                 {% for evento in eventos %}
                 <tr>
-                    <td>{{ evento.start_date }}</td>
-                    <td>{{ evento.title }}</td>
-                    <td>{{ evento.event_type }}</td>
-                    <td>{{ evento.description }}</td>
+                    <td>{{ evento.fecha_inicio }}</td> <!-- Mostrar fecha_inicio -->
+                    <td>{{ evento.fecha_fin }}</td>    <!-- Mostrar fecha_fin -->
+                    <td>{{ evento.Titulo }}</td>        <!-- Mostrar Titulo -->
+                    <td>{{ evento.get_TipoEvento_display }}</td> <!-- Mostrar el tipo de evento legible -->
+                    <td>{{ evento.Descripcion }}</td>  <!-- Mostrar Descripcion -->
                 </tr>
-                {% endfor %}
-
-                <!-- Iteración sobre feriados -->
-                {% for feriado in feriados %}
+                {% empty %}
                 <tr>
-                    <td>{{ feriado.date }}</td>
-                    <td>{{ feriado.name }}</td>
-                    <td>Feriado</td>
-                    <td>{{ feriado.description }}</td>
+                    <td colspan="5" class="text-center">No hay eventos registrados.</td>
                 </tr>
                 {% endfor %}
             </tbody>

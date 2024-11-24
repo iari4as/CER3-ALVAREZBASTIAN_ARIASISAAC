@@ -27,20 +27,17 @@ def manageEvents(request):
 
 # Create your views here.
 def home(request):
-    eventos = Evento.objects.all()
-    feriados = []
+    eventos = Evento.objects.all()  # Obtener todos los eventos
     
-    try:
-        response = requests.get("https://calendarific.com/api/v2")
-        if response.status_code == 200:
-            feriados = response.json().get('holidays', [])
-    except requests.exceptions.RequestException as e:
-        print(f"Error al conectar con la API de feriados: {e}")
+    # Intentamos obtener los feriados desde la API
 
-    return render(request, "core/index.html", {
+    # Creamos el diccionario con los datos para el contexto
+    data = {
         'eventos': eventos,
-        'feriados': feriados
-    })
+    }
+    
+    # Retornamos la respuesta renderizada con los datos
+    return render(request, "core/index.html", data)
 
 def iniciarSesion(request):
         data = {
