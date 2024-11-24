@@ -51,9 +51,10 @@ def home(request):
     # Verificar si la solicitud fue exitosa
     if feriados_response.status_code == 200:
         feriados = feriados_response.json()  # Obtenemos los feriados como un diccionario
-        for f in feriados['feriados']:
-            nombre = f['name']
-            print(nombre)
+        print(feriados)
+
+
+        
     else:
         feriados = []  # Si la solicitud falla, devolvemos una lista vacía
 

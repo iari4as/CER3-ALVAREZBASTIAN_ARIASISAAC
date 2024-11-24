@@ -5,7 +5,22 @@
 
     <!-- Mostrar los feriados -->
     <h2>Feriados</h2>
-    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feriado in feriados.feriados %}
+            <li>
+                <strong>{{ feriado.name }}</strong>: {{ feriado.description }} ({{ feriado.date.iso }})
+            </li>
+        {% endfor %}
+        </tbody>
+    </table>
+
 
     <!-- Formulario de filtro de eventos -->
     <form method="GET" action="{% url 'home' %}">
