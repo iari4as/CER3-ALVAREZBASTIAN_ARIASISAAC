@@ -27,16 +27,21 @@ def manageEvents(request):
 
 # Create your views here.
 def home(request):
-    eventos = Evento.objects.all()  # Obtener todos los eventos
-    
-    # Intentamos obtener los feriados desde la API
+    # Obtener el tipo de evento desde el filtro de la URL (si está presente)
+    event_type_filter = request.GET.get('event_type', '')
 
-    # Creamos el diccionario con los datos para el contexto
+    # Filtrar los eventos según el tipo, si es necesario
+    if event_type_filter:
+        eventos = Evento.objects.filter(TipoEvento=event_type_filter)
+    else:
+        eventos = Evento.objects.all()  # Si no hay filtro, mostrar todos los eventos
+
+    # Crear el diccionario de contexto
     data = {
         'eventos': eventos,
+        'TIPO_EVENTO_CHOICES': Evento.TIPO_EVENTO_CHOICES,
     }
-    
-    # Retornamos la respuesta renderizada con los datos
+
     return render(request, "core/index.html", data)
 
 def iniciarSesion(request):

@@ -3,7 +3,25 @@
 {% block content %}
 <div class="text-center">
     <h1 class="my-4">Calendario Académico</h1>
-    <div class="table-responsive">
+    
+    <!-- Formulario de filtro -->
+    <form method="GET" action="{% url 'home' %}">
+        <div class="mb-3">
+            <label for="event_type" class="form-label">Filtrar por Tipo de Evento</label>
+            <select class="form-select" id="event_type" name="event_type">
+                <option value="">Todos</option> <!-- Opción para mostrar todos los eventos -->
+                {% for key, value in TIPO_EVENTO_CHOICES %}
+                    <option value="{{ key }}" {% if key == request.GET.event_type %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <!-- Tabla de eventos -->
+    <div class="table-responsive mt-4">
         <table class="table table-bordered">
             <thead class="table-primary">
                 <tr>
