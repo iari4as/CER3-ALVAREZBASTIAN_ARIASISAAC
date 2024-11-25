@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 
+
 {% block content %}
     <h1>Calendario Académico</h1>
 
@@ -67,5 +68,26 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!--CALENDARIO-->
+    <div class="alo">
+        <div class="calendar">
+            <div class="header">
+                <div id="prev" class="btn"><i class="fa-solid fa-arrow-left"></i></div>
+                <div id="month-year"></div>
+                <div id="next" class="btn"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+            <div class="weekdays">
+                <div>Do</div>
+                <div>Lu</div>
+                <div>Ma</div>
+                <div>Mi</div>
+                <div>Ju</div>
+                <div>Vi</div>
+                <div>Sa</div>
+            </div>
+            <div class="days" id="days"></div>
+        </div>
     </div>
 {% endblock %}
