@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         events: '/get-events/', // URL que devuelve eventos y feriados
         eventClick: function (info) {
             // Mostrar detalles del evento/feriado
-            alert(`Título: ${info.event.title}\nDescripción: ${info.event.extendedProps.description}`);
+            alert(`Título: ${info.event.title}\nDescripción: ${info.event.extendedProps.description}`)
         }
     });
 
