@@ -222,7 +222,7 @@ def event_form(request):
             try:
                 start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
                 end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-                if start_date_obj >= end_date_obj:
+                if start_date_obj > end_date_obj:
                     errors["dates"] = "La fecha de inicio debe ser anterior a la fecha de fin."
             except ValueError:
                 errors["dates"] = "Las fechas deben tener un formato válido."
