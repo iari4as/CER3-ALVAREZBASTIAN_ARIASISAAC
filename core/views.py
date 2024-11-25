@@ -112,17 +112,36 @@ def iniciarSesion(request):
 
 
 def get_events(request):
+    # Obtener los eventos locales desde la base de datos
     eventos = Evento.objects.all()
     eventos_list = [
         {
             "title": evento.Titulo,
-            "start": str(evento.fecha_inicio),
-            "end": str(evento.fecha_fin),
+            "start": evento.fecha_inicio.strftime('%Y-%m-%dT%H:%M:%S'),
+            "end": evento.fecha_fin.strftime('%Y-%m-%dT%H:%M:%S'),
             "description": evento.Descripcion,
             "type": evento.TipoEvento,
         }
         for evento in eventos
     ]
+
+    # Obtener feriados de Calendarific
+    feriados_url = 'http://127.0.0.1:8000/api/Feriados/'
+    feriados_response = requests.get(feriados_url)
+
+    if feriados_response.status_code == 200:
+        feriados = feriados_response.json()
+        feriados_list = [
+            {
+                "title": feriado['name'],
+                "start": feriado['date']['iso'],
+                "description": feriado.get('description', 'Feriado oficial'),
+                "backgroundColor": "#FF5733", 
+                "borderColor": "#C70039",
+            }
+            for feriado in feriados.get('feriados', [])
+        ]
+        eventos_list.extend(feriados_list)
     return JsonResponse(eventos_list, safe=False)
 
 
