@@ -19,6 +19,14 @@ from datetime import datetime
 from django.contrib import messages
 
 
+def verificar_fechas(fecha_inicio, fecha_termino, fechas_lista):
+    for fecha in fechas_lista:
+        # Si la fecha está en el rango o es igual a la fecha de inicio o fin, retornamos 0
+        if fecha_inicio <= fecha <= fecha_termino:
+            print(f"Fecha {fecha.strftime('%Y-%m-%d')} está dentro del rango o es inicio/fin, retornando 0")
+            return 0
+    print("No hay fechas dentro del rango.")
+    return 1  # Si no se encuentra ninguna fecha dentro del rango
 
 
 @login_required
@@ -51,8 +59,6 @@ def home(request):
     # Verificar si la solicitud fue exitosa
     if feriados_response.status_code == 200:
         feriados = feriados_response.json()  # Obtenemos los feriados como un diccionario
-        print(feriados)
-
 
         
     else:
@@ -177,34 +183,56 @@ def es_administrador(usuario):
 @user_passes_test(es_administrador)
 def event_form(request):
     errors = {}
+    # Realizar la solicitud GET para obtener los feriados
+    feriados_url = 'http://127.0.0.1:8000/api/Feriados/'  # URL de la API de feriados
+    feriados_response = requests.get(feriados_url)
+     # Verificar si la solicitud fue exitosa
+    if feriados_response.status_code == 200:
+        feriados = feriados_response.json()  # Obtenemos los feriados como un diccionario
+    else:
+        feriados = []  # Si la solicitud falla, devolvemos una lista vacía
 
+    
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
         start_date = request.POST.get("start_date", "")
+        
         end_date = request.POST.get("end_date", "")
         event_type = request.POST.get("event_type", "")
+        lista_fechas = []
+        for f in feriados['feriados']:   
+            fecha = datetime(f['date']['datetime']['year'], f['date']['datetime']['month'], f['date']['datetime']['day'])
+            lista_fechas.append(fecha)
 
-        # Validación del título
-        if len(title) < 5:
-            errors["title"] = "El título debe tener al menos 5 caracteres."
 
-        # Validación de la descripción
-        if len(description) < 10:
-            errors["description"] = "La descripción debe tener al menos 10 caracteres."
 
-        # Validación de las fechas
-        try:
-            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
-            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-            if start_date_obj >= end_date_obj:
-                errors["dates"] = "La fecha de inicio debe ser anterior a la fecha de fin."
-        except ValueError:
-            errors["dates"] = "Las fechas deben tener un formato válido."
+        fecha_inicioDatatime= datetime.strptime(start_date,"%Y-%m-%d")
+        fecha_finDatatime= datetime.strptime(end_date,"%Y-%m-%d")
+        if  verificar_fechas(fecha_inicioDatatime, fecha_finDatatime, lista_fechas):
+            # Validación del título
+            if len(title) < 5:
+                errors["title"] = "El título debe tener al menos 5 caracteres."
 
-        # Validación del tipo de evento
-        if not event_type:
-            errors["event_type"] = "Debes seleccionar un tipo de evento."
+            # Validación de la descripción
+            if len(description) < 10:
+                errors["description"] = "La descripción debe tener al menos 10 caracteres."
+
+            # Validación de las fechas
+            try:
+                start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+                end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+                if start_date_obj >= end_date_obj:
+                    errors["dates"] = "La fecha de inicio debe ser anterior a la fecha de fin."
+            except ValueError:
+                errors["dates"] = "Las fechas deben tener un formato válido."
+
+            # Validación del tipo de evento
+            if not event_type:
+                errors["event_type"] = "Debes seleccionar un tipo de evento."
+        else:
+            errors["dates"] = "Error, uno o varios dias este rango de fechas corresponde a feriados"
+    
 
         # Si hay errores, se devuelven al formulario
         if errors:
