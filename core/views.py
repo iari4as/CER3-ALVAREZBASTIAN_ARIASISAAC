@@ -111,6 +111,20 @@ def iniciarSesion(request):
         return render(request, 'core/login.html', data) 
 
 
+def get_events(request):
+    eventos = Evento.objects.all()
+    eventos_list = [
+        {
+            "title": evento.Titulo,
+            "start": str(evento.fecha_inicio),
+            "end": str(evento.fecha_fin),
+            "description": evento.Descripcion,
+            "type": evento.TipoEvento,
+        }
+        for evento in eventos
+    ]
+    return JsonResponse(eventos_list, safe=False)
+
 
 def registroUser(request):
     data = {

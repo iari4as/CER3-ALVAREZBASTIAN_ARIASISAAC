@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from core.views import home, iniciarSesion,manageEvents,signout,registroUser, event_form,editar_evento, eliminar_evento, guardar_edit
+from core.views import home, iniciarSesion,manageEvents,signout,registroUser, event_form,editar_evento, eliminar_evento, guardar_edit,get_events
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home, name="home" ),
@@ -29,4 +29,5 @@ urlpatterns = [
     path('editar_evento/<int:evento_id>/', editar_evento, name='editar_evento'),
     path('confirm/', guardar_edit, name='guardar_edit'),
     path('api/', include('EduPlanner.urls')),
+    path('get-events/', get_events, name='get_events'),
 ]
