@@ -1,3 +1,3 @@
-# CER3-ALVAREZBASTIAN_ARIASISAAC
-creacion de pagina web con calendario y manejo de APIs
+# certamen 3 de taller lenguaje de programacion. 
+creacion de pagina web con calendario y manejo de APIs publicas
 (las credenciales se perdieron)
